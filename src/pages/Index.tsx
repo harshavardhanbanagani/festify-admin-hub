@@ -4,8 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarCheck, Users, Award, Mail, Clock, MapPin } from "lucide-react";
+import { useApp } from "@/context/AppContext";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const { festSettings, events, departments } = useApp();
+  const navigate = useNavigate();
   const [countdown, setCountdown] = useState({
     days: 0,
     hours: 0,
@@ -13,21 +17,10 @@ const Index = () => {
     seconds: 0
   });
 
-  const [festData] = useState({
-    eventDate: new Date("2024-03-15T09:00:00"),
-    title: "MITS FEST 2024",
-    subtitle: "Innovation • Technology • Excellence",
-    description: "Join us for the most exciting tech fest of the year featuring competitions, workshops, and networking opportunities.",
-    totalEvents: 25,
-    departments: 8,
-    expectedParticipants: 2000,
-    venue: "MITS Campus, Madanapalle"
-  });
-
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date().getTime();
-      const distance = festData.eventDate.getTime() - now;
+      const distance = new Date(festSettings.eventDate).getTime() - now;
 
       if (distance > 0) {
         setCountdown({
@@ -40,35 +33,26 @@ const Index = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [festData.eventDate]);
-
-  const departments = [
-    { name: "Computer Science", events: 8, icon: "💻", color: "bg-blue-500" },
-    { name: "Electronics", events: 6, icon: "🔌", color: "bg-green-500" },
-    { name: "Mechanical", events: 5, icon: "⚙️", color: "bg-orange-500" },
-    { name: "Civil", events: 4, icon: "🏗️", color: "bg-purple-500" },
-    { name: "Chemical", events: 3, icon: "🧪", color: "bg-red-500" },
-    { name: "Biotechnology", events: 4, icon: "🧬", color: "bg-teal-500" }
-  ];
+  }, [festSettings.eventDate]);
 
   const highlights = [
     {
       title: "Technical Competitions",
       description: "Coding contests, robotics challenges, and innovation showcases",
       icon: <Award className="h-8 w-8" />,
-      stats: "15+ Events"
+      stats: `${events.filter(e => e.category === 'Technical').length}+ Events`
     },
     {
       title: "Workshops & Seminars",
       description: "Industry experts sharing cutting-edge knowledge and skills",
       icon: <Users className="h-8 w-8" />,
-      stats: "10+ Sessions"
+      stats: `${events.filter(e => e.category === 'Workshop').length}+ Sessions`
     },
     {
       title: "Cultural Programs",
       description: "Music, dance, and entertainment to celebrate technology and culture",
       icon: <CalendarCheck className="h-8 w-8" />,
-      stats: "5+ Shows"
+      stats: `${events.filter(e => e.category === 'Cultural').length}+ Shows`
     }
   ];
 
@@ -82,14 +66,19 @@ const Index = () => {
               <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-blue-400 rounded-lg flex items-center justify-center text-white font-bold text-xl">
                 M
               </div>
-              <span className="text-white font-bold text-xl">MITS FEST</span>
+              <span className="text-white font-bold text-xl">{festSettings.festName.split(' ')[0]} FEST</span>
             </div>
             <div className="hidden md:flex space-x-6">
               <a href="#home" className="text-white hover:text-purple-300 transition-colors">Home</a>
+              <button onClick={() => navigate('/events')} className="text-white hover:text-purple-300 transition-colors">Events</button>
               <a href="#departments" className="text-white hover:text-purple-300 transition-colors">Departments</a>
-              <a href="#register" className="text-white hover:text-purple-300 transition-colors">Register</a>
+              <button onClick={() => navigate('/register')} className="text-white hover:text-purple-300 transition-colors">Register</button>
               <a href="#contact" className="text-white hover:text-purple-300 transition-colors">Contact</a>
-              <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+              <Button 
+                variant="outline" 
+                className="border-white/30 text-white hover:bg-white/10"
+                onClick={() => navigate('/login')}
+              >
                 Admin Login
               </Button>
             </div>
@@ -102,16 +91,20 @@ const Index = () => {
         <div className="max-w-7xl mx-auto text-center">
           <div className="mb-8">
             <Badge className="mb-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white border-none px-4 py-2 text-lg">
-              March 15-17, 2024
+              {new Date(festSettings.eventDate).toLocaleDateString('en-IN', { 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric' 
+              })}
             </Badge>
             <h1 className="text-6xl md:text-8xl font-bold text-white mb-4 bg-gradient-to-r from-purple-400 via-blue-400 to-purple-600 bg-clip-text text-transparent">
-              {festData.title}
+              {festSettings.festName}
             </h1>
             <p className="text-2xl text-blue-200 mb-6 font-semibold tracking-wider">
-              {festData.subtitle}
+              {festSettings.festSubtitle}
             </p>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-              {festData.description}
+              {festSettings.festDescription}
             </p>
           </div>
 
@@ -136,10 +129,19 @@ const Index = () => {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Button size="lg" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border-none px-8 py-4 text-lg">
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border-none px-8 py-4 text-lg"
+              onClick={() => navigate('/register')}
+            >
               Register Now
             </Button>
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg"
+              onClick={() => navigate('/events')}
+            >
               View Events
             </Button>
           </div>
@@ -147,15 +149,15 @@ const Index = () => {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-white mb-2">{festData.totalEvents}+</div>
+              <div className="text-3xl md:text-4xl font-bold text-white mb-2">{events.length}+</div>
               <div className="text-purple-200">Events</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-white mb-2">{festData.departments}</div>
+              <div className="text-3xl md:text-4xl font-bold text-white mb-2">{departments.length}</div>
               <div className="text-purple-200">Departments</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-white mb-2">{festData.expectedParticipants}+</div>
+              <div className="text-3xl md:text-4xl font-bold text-white mb-2">2000+</div>
               <div className="text-purple-200">Participants</div>
             </div>
             <div className="text-center">
@@ -185,10 +187,10 @@ const Index = () => {
                 </CardHeader>
                 <CardContent className="text-center">
                   <Badge className={`${dept.color} text-white mb-4`}>
-                    {dept.events} Events
+                    {events.filter(e => e.department === dept.name).length} Events
                   </Badge>
                   <p className="text-white/70">
-                    Explore cutting-edge competitions and workshops in {dept.name.toLowerCase()}.
+                    {dept.description}
                   </p>
                 </CardContent>
               </Card>
@@ -238,11 +240,15 @@ const Index = () => {
                 <div className="space-y-4">
                   <div className="flex items-center text-white/80">
                     <CalendarCheck className="h-5 w-5 mr-3 text-purple-400" />
-                    <span>March 15-17, 2024</span>
+                    <span>{new Date(festSettings.eventDate).toLocaleDateString('en-IN', { 
+                      day: 'numeric', 
+                      month: 'long', 
+                      year: 'numeric' 
+                    })}</span>
                   </div>
                   <div className="flex items-center text-white/80">
                     <MapPin className="h-5 w-5 mr-3 text-purple-400" />
-                    <span>{festData.venue}</span>
+                    <span>{festSettings.venue}</span>
                   </div>
                   <div className="flex items-center text-white/80">
                     <Clock className="h-5 w-5 mr-3 text-purple-400" />
@@ -250,7 +256,7 @@ const Index = () => {
                   </div>
                   <div className="flex items-center text-white/80">
                     <Mail className="h-5 w-5 mr-3 text-purple-400" />
-                    <span>mitsfest@mits.ac.in</span>
+                    <span>{festSettings.contactEmail}</span>
                   </div>
                 </div>
               </div>
@@ -259,7 +265,11 @@ const Index = () => {
                 <p className="text-white/80 mb-6">
                   Register now and be part of the most exciting tech fest in the region!
                 </p>
-                <Button size="lg" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border-none px-8 py-4">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border-none px-8 py-4"
+                  onClick={() => navigate('/register')}
+                >
                   Register Now
                 </Button>
               </div>
@@ -280,7 +290,7 @@ const Index = () => {
                 <span className="text-white font-bold text-xl">MITS FEST</span>
               </div>
               <p className="text-white/70">
-                The premier technology festival celebrating innovation, creativity, and excellence.
+                {festSettings.festDescription.substring(0, 100)}...
               </p>
             </div>
             
@@ -288,29 +298,28 @@ const Index = () => {
               <h5 className="text-white font-semibold mb-4">Quick Links</h5>
               <ul className="space-y-2">
                 <li><a href="#home" className="text-white/70 hover:text-white transition-colors">Home</a></li>
+                <li><button onClick={() => navigate('/events')} className="text-white/70 hover:text-white transition-colors">Events</button></li>
                 <li><a href="#departments" className="text-white/70 hover:text-white transition-colors">Departments</a></li>
-                <li><a href="#register" className="text-white/70 hover:text-white transition-colors">Register</a></li>
-                <li><a href="#contact" className="text-white/70 hover:text-white transition-colors">Contact</a></li>
+                <li><button onClick={() => navigate('/register')} className="text-white/70 hover:text-white transition-colors">Register</button></li>
               </ul>
             </div>
             
             <div>
-              <h5 className="text-white font-semibold mb-4">Events</h5>
+              <h5 className="text-white font-semibold mb-4">Categories</h5>
               <ul className="space-y-2">
-                <li><a href="#" className="text-white/70 hover:text-white transition-colors">Technical</a></li>
-                <li><a href="#" className="text-white/70 hover:text-white transition-colors">Cultural</a></li>
-                <li><a href="#" className="text-white/70 hover:text-white transition-colors">Workshops</a></li>
-                <li><a href="#" className="text-white/70 hover:text-white transition-colors">Seminars</a></li>
+                <li><span className="text-white/70">Technical</span></li>
+                <li><span className="text-white/70">Cultural</span></li>
+                <li><span className="text-white/70">Workshops</span></li>
+                <li><span className="text-white/70">Competitions</span></li>
               </ul>
             </div>
             
             <div>
               <h5 className="text-white font-semibold mb-4">Contact Info</h5>
               <div className="space-y-2 text-white/70">
-                <p>MITS Campus, Madanapalle</p>
-                <p>Andhra Pradesh, India</p>
-                <p>Phone: +91 123 456 7890</p>
-                <p>Email: mitsfest@mits.ac.in</p>
+                <p>{festSettings.venue}</p>
+                <p>Phone: {festSettings.contactPhone}</p>
+                <p>Email: {festSettings.contactEmail}</p>
               </div>
             </div>
           </div>
