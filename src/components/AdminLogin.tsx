@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useApp } from '@/context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
-import { LogIn, Shield } from 'lucide-react';
+import { LogIn, Shield, ArrowLeft } from 'lucide-react';
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
@@ -47,7 +47,16 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4 relative">
+      <Button
+        onClick={() => navigate('/')}
+        variant="ghost"
+        className="absolute top-4 left-4 text-white hover:bg-white/10"
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Back to Home
+      </Button>
+      
       <Card className="w-full max-w-md bg-white/10 backdrop-blur-md border-white/20">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full flex items-center justify-center">
