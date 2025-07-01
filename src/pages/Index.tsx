@@ -10,51 +10,6 @@ import { useNavigate } from "react-router-dom";
 const Index = () => {
   const { festSettings, events, departments } = useApp();
   const navigate = useNavigate();
-  const [countdown, setCountdown] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-  });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = new Date(festSettings.eventDate).getTime() - now;
-
-      if (distance > 0) {
-        setCountdown({
-          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-          seconds: Math.floor((distance % (1000 * 60)) / 1000)
-        });
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [festSettings.eventDate]);
-
-  const highlights = [
-    {
-      title: "Technical Competitions",
-      description: "Coding contests, robotics challenges, and innovation showcases",
-      icon: <Award className="h-8 w-8" />,
-      stats: `${events.filter(e => e.category === 'Technical').length}+ Events`
-    },
-    {
-      title: "Workshops & Seminars",
-      description: "Industry experts sharing cutting-edge knowledge and skills",
-      icon: <Users className="h-8 w-8" />,
-      stats: `${events.filter(e => e.category === 'Workshop').length}+ Sessions`
-    },
-    {
-      title: "Cultural Programs",
-      description: "Music, dance, and entertainment to celebrate technology and culture",
-      icon: <CalendarCheck className="h-8 w-8" />,
-      stats: `${events.filter(e => e.category === 'Cultural').length}+ Shows`
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
@@ -106,25 +61,6 @@ const Index = () => {
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
               {festSettings.festDescription}
             </p>
-          </div>
-
-          {/* Countdown Timer */}
-          <div className="mb-12">
-            <h3 className="text-2xl text-white mb-6 font-semibold">Event Starts In</h3>
-            <div className="flex justify-center space-x-4 md:space-x-8">
-              {Object.entries(countdown).map(([unit, value]) => (
-                <div key={unit} className="text-center">
-                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 md:p-6 border border-white/20">
-                    <div className="text-3xl md:text-5xl font-bold text-white mb-2">
-                      {value.toString().padStart(2, '0')}
-                    </div>
-                    <div className="text-purple-200 text-sm md:text-base uppercase tracking-wider">
-                      {unit}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Action Buttons */}
@@ -196,85 +132,6 @@ const Index = () => {
               </Card>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Event Highlights */}
-      <section className="py-20 px-4 bg-black/20">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Event Highlights</h2>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto">
-              Discover what makes MITS Fest the premier tech event of the year
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {highlights.map((highlight, index) => (
-              <Card key={index} className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
-                <CardHeader className="text-center">
-                  <div className="text-purple-400 mb-4 flex justify-center">
-                    {highlight.icon}
-                  </div>
-                  <CardTitle className="text-white text-xl">{highlight.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <p className="text-white/70 mb-4">{highlight.description}</p>
-                  <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
-                    {highlight.stats}
-                  </Badge>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Info */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h3 className="text-3xl font-bold text-white mb-4">Event Information</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center text-white/80">
-                    <CalendarCheck className="h-5 w-5 mr-3 text-purple-400" />
-                    <span>{new Date(festSettings.eventDate).toLocaleDateString('en-IN', { 
-                      day: 'numeric', 
-                      month: 'long', 
-                      year: 'numeric' 
-                    })}</span>
-                  </div>
-                  <div className="flex items-center text-white/80">
-                    <MapPin className="h-5 w-5 mr-3 text-purple-400" />
-                    <span>{festSettings.venue}</span>
-                  </div>
-                  <div className="flex items-center text-white/80">
-                    <Clock className="h-5 w-5 mr-3 text-purple-400" />
-                    <span>9:00 AM - 6:00 PM</span>
-                  </div>
-                  <div className="flex items-center text-white/80">
-                    <Mail className="h-5 w-5 mr-3 text-purple-400" />
-                    <span>{festSettings.contactEmail}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="text-center md:text-right">
-                <h4 className="text-2xl font-bold text-white mb-4">Ready to Participate?</h4>
-                <p className="text-white/80 mb-6">
-                  Register now and be part of the most exciting tech fest in the region!
-                </p>
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border-none px-8 py-4"
-                  onClick={() => navigate('/register')}
-                >
-                  Register Now
-                </Button>
-              </div>
-            </div>
-          </Card>
         </div>
       </section>
 
