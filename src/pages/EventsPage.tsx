@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,43 +13,50 @@ import EventList from "@/components/EventList";
 const EventsPage = () => {
   const { events, departments } = useApp();
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedDepartment, setSelectedDepartment] = useState("all");
-
-  // Filter events based on search term, category, and department
-  const filteredEvents = events.filter(event => {
-    return (
-      event.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedCategory === "all" || event.category === selectedCategory) &&
-      (selectedDepartment === "all" || event.department === selectedDepartment)
-    );
-  });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-      {/* Navigation */}
-      <nav className="backdrop-blur-md bg-white/10 border-b border-white/20 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Button
-              onClick={() => navigate('/')}
-              variant="ghost"
-              className="text-white hover:bg-white/10"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Home
-            </Button>
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-blue-400 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                M
-              </div>
-              <span className="text-white font-bold text-xl">MITS FEST - Events</span>
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Header Bar */}
+      <div className="bg-white border-b border-gray-200 py-2 px-4">
+        <div className="max-w-7xl mx-auto flex justify-between items-center text-sm">
+          <div className="flex space-x-6 text-red-600">
+            <span>MITS Radio 90.8 CRS</span>
+            <span>NAAC</span>
+            <span>NIRF</span>
+            <span>UGC Affairs</span>
+            <span>Newsletter</span>
+            <span>Contact Us</span>
+          </div>
+          <div className="flex space-x-4 text-gray-600">
+            <span>📞 +91-8712655132 / 4 / 8, 08571280255</span>
+            <span>🔒 Moodle Login</span>
+            <span>✉️ admissions@mits.ac.in</span>
+            <span>🔍 Search</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Header */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Button
+                onClick={() => navigate('/')}
+                variant="ghost"
+                className="text-gray-600 hover:bg-gray-100"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Home
+              </Button>
+            </div>
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-gray-800">Event Listings</h1>
+              <p className="text-gray-600">MITS FEST 2024</p>
             </div>
             <div className="flex space-x-4">
               <Button 
-                variant="outline" 
-                className="border-white/30 text-white hover:bg-white/10"
+                className="bg-red-600 hover:bg-red-700 text-white"
                 onClick={() => navigate('/register')}
               >
                 Register
@@ -56,18 +64,36 @@ const EventsPage = () => {
             </div>
           </div>
         </div>
+      </header>
+
+      {/* Navigation Bar */}
+      <nav className="bg-red-600 text-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex space-x-8 py-3">
+            <button onClick={() => navigate('/')} className="hover:bg-red-700 px-3 py-2 rounded transition-colors">Home</button>
+            <span className="bg-red-700 px-3 py-2 rounded">Events</span>
+            <a href="/#departments" className="hover:bg-red-700 px-3 py-2 rounded transition-colors">Departments</a>
+            <button onClick={() => navigate('/register')} className="hover:bg-red-700 px-3 py-2 rounded transition-colors">Registration</button>
+            <a href="#about" className="hover:bg-red-700 px-3 py-2 rounded transition-colors">About</a>
+            <a href="#contact" className="hover:bg-red-700 px-3 py-2 rounded transition-colors">Contact</a>
+          </div>
+        </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto">
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            Event Listings
-          </h1>
-          <p className="text-xl text-white/80 max-w-3xl mx-auto">
-            Discover amazing competitions, workshops, and cultural events at MITS Fest 2024
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Discover Amazing Events
+          </h2>
+          <p className="text-gray-600 max-w-3xl mx-auto">
+            Explore competitions, workshops, and cultural events at MITS Fest 2024
           </p>
         </div>
-        <EventList />
+        
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <EventList />
+        </div>
       </div>
     </div>
   );
